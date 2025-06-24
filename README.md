@@ -12,7 +12,9 @@ Extra → Esplora materiali facoltativi per approfondire o esercitarti in autono
 
 🛠️ Requisiti consigliati
 IDE: IntelliJ IDEA o VSC
+
 Java JDK: versione 17 o superiore
+
 Competenze pregresse: Nessuna richiesta, corso entry-level
 
 📬 Contatti
