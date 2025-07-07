@@ -1,0 +1,107 @@
+// Import
+import java.util.*;
+
+// Classe astratta Persona
+abstract class Persona {
+    private String nome;
+    private int eta;
+
+    public Persona(String nome, int eta) {
+        this.nome = nome;
+        this.eta = eta;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public int getEta() {
+        return eta;
+    }
+
+    public void setEta(int eta) {
+        this.eta = eta;
+    }
+
+    public abstract void descriviRuolo();
+}
+
+// Interfaccia Registrabile
+interface Registrabile {
+    void registrazione();
+}
+
+// Classe Studente
+class Studente extends Persona implements Registrabile {
+    private String classeFrequentata;
+
+    public Studente(String nome, int eta, String classeFrequentata) {
+        super(nome, eta);
+        this.classeFrequentata = classeFrequentata;
+    }
+
+    public String getClasseFrequentata() {
+        return classeFrequentata;
+    }
+
+    public void setClasseFrequentata(String classeFrequentata) {
+        this.classeFrequentata = classeFrequentata;
+    }
+
+    public void descriviRuolo() {
+        System.out.println("Sono uno studente della classe " + classeFrequentata);
+    }
+
+    public void registrazione() {
+        System.out.println("Registrazione tramite modulo online");
+    }
+}
+
+// Classe Docente
+class Docente extends Persona implements Registrabile {
+    private String materia;
+
+    public Docente(String nome, int eta, String materia) {
+        super(nome, eta);
+        this.materia = materia;
+    }
+
+    public String getMateria() {
+        return materia;
+    }
+
+    public void setMateria(String materia) {
+        this.materia = materia;
+    }
+
+    public void descriviRuolo() {
+        System.out.println("Sono un docente di " + materia);
+    }
+
+    public void registrazione() {
+        System.out.println("Registrazione tramite segreteria didattica");
+    }
+}
+
+// Classe principale
+public class GestioneScuola {
+    public static void main(String[] args) {
+        List<Persona> persone = new ArrayList<>();
+
+        persone.add(new Studente("Luca", 16, "3B"));
+        persone.add(new Docente("Prof.ssa Bianchi", 45, "Matematica"));
+        persone.add(new Studente("Giulia", 17, "4A"));
+
+        for (Persona p : persone) {
+            p.descriviRuolo();
+            if (p instanceof Registrabile) {
+                ((Registrabile) p).registrazione();
+            }
+            System.out.println("---");
+        }
+    }
+}
