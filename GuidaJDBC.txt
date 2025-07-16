@@ -1,0 +1,75 @@
+1. Prerequisiti
+Java JDK installato (già presente)
+Visual Studio Code installato
+Estensione "Extension Pack for Java" installata su VSC (include Language Support, Maven, Debugger)
+
+2. Creazione del progetto Java
+Apri VSC e il terminale (Visualizza → Terminale o Ctrl + ò)
+
+Crea una cartella per il progetto:
+
+
+    mkdir ProgettoJDBC && cd ProgettoJDBC
+
+
+Crea un progetto Maven base:
+
+    mvn archetype:generate -DgroupId=com.example \
+        -DartifactId=ProgettoJDBC \
+        -DarchetypeArtifactId=maven-archetype-quickstart \
+        -DinteractiveMode=false
+
+Entra nella cartella del progetto:
+
+    cd ProgettoJDBC
+
+
+3. Aggiunta del driver JDBC al file pom.xml
+Esempio per MySQL:
+All'interno del blocco <dependencies>, aggiungi:
+
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.33</version>
+      </dependency>
+
+Salva il file, VSC scaricherà automaticamente le dipendenze.
+
+4. Scrittura del codice JDBC
+Modifica il file src/main/java/com/example/App.java con il seguente esempio:
+
+
+        import java.sql.*;
+        
+        public class App {
+            public static void main(String[] args) {
+                String url = "jdbc:mysql://localhost:3306/nomedb"; // sostituire con il nome del DB
+                String user = "root";       // utente del DB
+                String password = "";       // password del DB
+        
+                try (Connection conn = DriverManager.getConnection(url, user, password)) {
+                    System.out.println("Connessione riuscita");
+                } catch (SQLException e) {
+                    System.out.println("Errore nella connessione");
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+Compila ed esegui con Maven:
+
+    mvn compile
+    mvn exec:java -Dexec.mainClass="com.example.App"
+
+Se la connessione funziona, vedrai il messaggio: Connessione riuscita.
+
+6. Problemi comuni
+
+Se compare ClassNotFoundException, assicurarsi che Maven abbia scaricato il driver JDBC (mvn clean install)
+Se dà errore di connessione, verificare:
+Che il database sia attivo
+Che l'URL di connessione sia corretto
+Che l'utente e la password siano giusti
+Che non ci siano blocchi da firewall o restrizioni sul database
