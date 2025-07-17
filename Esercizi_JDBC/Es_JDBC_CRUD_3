@@ -1,0 +1,128 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class CrudUtentiApp {
+
+    static final String URL = "jdbc:mysql://localhost:3306/miodatabase";
+    static final String USER = "root";
+    static final String PASSWORD = "password";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int scelta;
+
+        do {
+            System.out.println("\n===== MENU UTENTI =====");
+            System.out.println("1. Inserisci nuovo utente");
+            System.out.println("2. Visualizza tutti gli utenti");
+            System.out.println("3. Aggiorna nome utente tramite ID");
+            System.out.println("4. Cancella utente tramite ID");
+            System.out.println("0. Esci");
+            System.out.print("Scelta: ");
+            scelta = scanner.nextInt();
+            scanner.nextLine(); // consuma newline
+
+            switch (scelta) {
+                case 1 -> inserisciUtente(scanner);
+                case 2 -> visualizzaUtenti();
+                case 3 -> aggiornaUtente(scanner);
+                case 4 -> cancellaUtente(scanner);
+                case 0 -> System.out.println("Uscita.");
+                default -> System.out.println("Scelta non valida.");
+            }
+        } while (scelta != 0);
+
+        scanner.close();
+    }
+
+    // Inserimento nuovo utente
+    public static void inserisciUtente(Scanner scanner) {
+        System.out.print("Inserisci nome: ");
+        String nome = scanner.nextLine();
+        System.out.print("Inserisci email: ");
+        String email = scanner.nextLine();
+
+        String sql = "INSERT INTO utenti (nome, email) VALUES (?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, nome);
+            stmt.setString(2, email);
+            stmt.executeUpdate();
+            System.out.println("Utente inserito.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Visualizzazione utenti
+    public static void visualizzaUtenti() {
+        String sql = "SELECT * FROM utenti";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            System.out.println("\nElenco utenti:");
+            while (rs.next()) {
+                System.out.printf("ID: %d - Nome: %s - Email: %s\n",
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("email"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Aggiornamento nome tramite ID
+    public static void aggiornaUtente(Scanner scanner) {
+        System.out.print("Inserisci ID dell'utente da aggiornare: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Inserisci nuovo nome: ");
+        String nuovoNome = scanner.nextLine();
+
+        String sql = "UPDATE utenti SET nome = ? WHERE id = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, nuovoNome);
+            stmt.setInt(2, id);
+            int righe = stmt.executeUpdate();
+            if (righe > 0)
+                System.out.println("Utente aggiornato.");
+            else
+                System.out.println("Utente non trovato.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Cancellazione utente tramite ID
+    public static void cancellaUtente(Scanner scanner) {
+        System.out.print("Inserisci ID dell'utente da cancellare: ");
+        int id = scanner.nextInt();
+
+        String sql = "DELETE FROM utenti WHERE id = ?";
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            int righe = stmt.executeUpdate();
+            if (righe > 0)
+                System.out.println("Utente eliminato.");
+            else
+                System.out.println("Utente non trovato.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
